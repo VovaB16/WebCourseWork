@@ -1,0 +1,42 @@
+﻿@model List<Product>;
+
+<h1>Products Panel</h1>
+<p>Here you can manage all the available products.</p>
+
+<a asp-controller="Products" asp-action="Create" class="btn btn-primary mb-4">Створити новий продукт</a>
+
+<div class="row row-cols-1 row-cols-md-5 g-5">
+    @foreach (var product in Model)
+    {
+        <div class="col">
+            <div class="card h-100">
+                <img src="@product.ImageUrl" class="card-img-top" alt="Product Image">
+                <div class="card-body">
+                    <h5 class="card-title">@product.Name</h5>
+                    <p class="card-text">
+                        @if (product.Discount > 0)
+                        {
+                            <del>@product.Price$</del>
+
+                            <br />
+                        }
+                        @(product.Price - (product.Price * product.Discount / 100M))$
+                    </p>
+                </div>
+                <div class="card-footer">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-secondary" onclick="location.href='@Url.Action("Info", "Products", new { id = product.Id })'">
+                            <i class="bi bi-info-circle-fill"></i> Info
+                        </button>
+                        <a class="btn btn-warning" href="@Url.Action("Edit", "Products", new { id = product.Id })">
+                            <i class="bi bi-pencil-fill"></i> Edit
+                        </a>
+                        <a class="btn btn-danger" href="@Url.Action("Delete", "Products", new { id = product.Id })">
+                            <i class="bi bi-trash-fill"></i> Delete
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,64 @@
+﻿@model Product;
+
+<h2>Інформація</h2>
+
+<form class="row g-3" asp-action="Info" method="post">
+    <div class="shadow p-3 mb-2 bg-body-tertiary rounded">
+        <div class="col-md-9 mb-3">
+            <label asp-for=Name class="form-label">Вкажіть назву</label>
+            <input asp-for=Name type="text" class="form-control" placeholder="Введіть назву товару" readonly>
+        </div>
+
+        <div class="col-md-6">
+            <label asp-for="CategoryId" for="inputState" class="form-label" readonly>Категорія</label>
+            <select asp-for="CategoryId" asp-items=ViewBag.Categories id="inputState" class="form-select">
+                <option selected>Вибирати</option>
+            </select>
+        </div>
+    </div>
+    <div class="shadow p-3 mb-2 bg-body-tertiary rounded">
+        <div class="col-md-9">
+            <label asp-for=ImageUrl for="inputEmail4" class="form-label">Фото</label>
+            <input asp-for=ImageUrl type="url" class="form-control" placeholder="Введіть адресу зображення товару" id="inputEmail4" readonly>
+        </div>
+    </div>
+    <div class="shadow p-3 mb-2 bg-body-tertiary rounded">
+        <div class="col-md-9">
+            <label asp-for=Price class="form-label">Ціна</label>
+            <div class="input-group mb-3">
+                <span class="input-group-text">$</span>
+                <input asp-for=Price type="number" min="0" step="100" class="form-control" placeholder="Введіть ціну товару" readonly>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <label asp-for=Discount class="form-label">Знижка</label>
+            <div class="input-group mb-3">
+                <span class="input-group-text">%</span>
+                <input asp-for=Discount type="number" min="0" max="100" step="5" class="form-control" placeholder="Введіть знижку на товар" readonly>
+            </div>
+        </div>
+    </div>
+    <div class="shadow p-3 mb-2 bg-body-tertiary rounded">
+        <div class="col-md-9 mb-3">
+            <label asp-for=Description for="exampleFormControlTextarea1" class="form-label">Опис</label>
+            <textarea asp-for=Description class="form-control" id="exampleFormControlTextarea1" placeholder="Введіть опис товару" rows="3" readonly></textarea>
+        </div>
+    </div>
+    <div class="shadow p-3 mb-2 bg-body-tertiary rounded">
+        <div class="col-md-9 mb-3">
+            <label class="form-label">Контактна особа</label>
+            <input type="text" class="form-control" placeholder="Вкажіть ім'я контактної особи" readonly>
+        </div>
+        <div class="col-md-9 mb-3">
+            <label class="form-label">Email-адреса</label>
+            <input type="text" class="form-control" placeholder="Вкажіть Email-адресу" readonly>
+        </div>
+        <div class="col-md-9 mb-3">
+            <label class="form-label">Номер телефону</label>
+            <input type="text" class="form-control" placeholder="Вкажіть номер телефону" readonly>
+        </div>
+    </div>
+    <div class="col-6 ">
+        <a asp-action="Index" class="btn btn-dark w-100">Go Back</a>
+    </div>
+</form>

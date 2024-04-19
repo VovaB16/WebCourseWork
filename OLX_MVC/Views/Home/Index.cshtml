@@ -1,0 +1,25 @@
+﻿@model List<Product>
+
+<div class="text-center my-3">
+    <h1 class="display-4 my-2">Welcome to Product Catalog</h1>
+
+    <div class="row row-cols-1 row-cols-md-5 g-4">
+        @foreach (var i in Model)
+        {
+            <div class="col">
+                <a href="@Url.Action("ProductsDetails", "Home", new { id = i.Id })" class="text-black">
+                    <div class="card h-100 clickable-card">
+                        <img src="@i.ImageUrl" class="card-img-top img-fluid" height="240" alt="...">
+                        <div class="card-body d-flex flex-column justify-content-end">
+                            <p class="mt-auto">@i.Name</p>
+                            <p>@i.Price$</p>
+                                <small class="text-muted">
+                                    <a asp-controller="Featured" asp-action="Append" asp-route-id="@i.Id" class="bi bi-heart btn btn-outline-danger"></a>
+                                </small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+</div>
