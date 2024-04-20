@@ -1,4 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using OLX_MVC.Services
+@inject ICartService cartService;
+
+@{
+    int cartSize = cartService.GetCount();
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -23,15 +30,22 @@
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
+                        @if (User.IsInRole(Roles.ADMIN))
+                        {
+                            <li class="nav-item">
+                                <div class="text-end">
+                                    <a class="btn btn-light nav-link text-dark" asp-controller="Products" asp-action="Index">Products</a>
+                                </div>
+                            </li>
+                        }
                         <li class="nav-item">
-                            <div class="text-end">
-                                <a href="@Url.Action("Index", "Products")" class="btn btn-light text-dark">Products</a>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <div class="text-end">
-                                <a class="nav-link text-light" asp-controller="Featured" asp-action="Index"><div class="bi bi-heart-fill"></div></a>
-                            </div>
+                            <a class="nav-link text-light" asp-controller="Featured" asp-action="Index">
+                            <i class="bi bi-heart-fill"></i>
+                            @if (cartSize > 0)
+                            {
+                                <span class="badge rounded-pill bg-success">@cartSize</span>
+                            }
+                        </a>
                         </li>
                     </ul>
                     <partial name="_LoginPartial" />

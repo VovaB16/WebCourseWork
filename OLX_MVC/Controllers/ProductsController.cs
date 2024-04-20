@@ -5,15 +5,16 @@ using Microsoft.EntityFrameworkCore;
 using OLX_MVC.Data.Entities;
 using AutoMapper;
 using OLX_MVC.Models;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace OLX_MVC.Controllers
 {
+    [Authorize(Roles = Roles.ADMIN)]
     public class ProductsController : Controller
     {
         private ShopDbContext context;
         private readonly IMapper mapper;
-
-
         public ProductsController(ShopDbContext context, IMapper mapper)
         {
             this.context = context;

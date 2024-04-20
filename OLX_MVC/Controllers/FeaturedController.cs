@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OLX_MVC.Data;
 using OLX_MVC.Extentions;
 using OLX_MVC.Models;
+using OLX_MVC.Services;
 
 namespace OLX_MVC.Controllers
 {
@@ -12,44 +12,55 @@ namespace OLX_MVC.Controllers
     {
         private readonly ShopDbContext context;
         private readonly IMapper mapper;
+        private readonly ICartService cartService;
 
-        public FeaturedController(ShopDbContext context, IMapper mapper)
+        public FeaturedController(ShopDbContext context, IMapper mapper, ICartService cartService)
         {
             this.context = context;
             this.mapper = mapper;
+            this.cartService = cartService;
         }
 
         public IActionResult Index()
         {
-            var ids = HttpContext.Session.Get<List<int>>(WebConstants.CART_KEY);
-            if (ids == null) ids = new List<int>();
+            var items = HttpContext.Session.Get<Dictionary<int, int>>(WebConstants.CART_KEY);
+            if (items == null) items = new Dictionary<int, int>();
 
             var entities = context.Products
                                     .Include(x => x.Category)
-                                    .Where(x => ids.Contains(x.Id))
+                                    .Where(x => items.Keys.Contains(x.Id))
                                     .ToList();
+
             var list = mapper.Map<List<ProductFeaturedModel>>(entities);
+
+            foreach (var i in list)
+            {
+                i.CountToBuy = items[i.Id];
+            }
 
             return View(list);
         }
 
-        public IActionResult Append(int id)
+        public IActionResult Append(int id, int count = 1, string? returnUrl = null)
         {
-            var ids = HttpContext.Session.Get<List<int>>(WebConstants.CART_KEY);
-            if (ids == null) ids = new List<int>();
-            ids.Add(id);
+            cartService.Append(id, count);
 
-            HttpContext.Session.Set(WebConstants.CART_KEY, ids);
-
-            return RedirectToAction("Index", "Home");
+            if (returnUrl != null)
+                return Redirect(returnUrl);
+            else
+                return RedirectToAction("Index", "Home");
         }
 
         public IActionResult Remove(int id)
         {
-            var ids = HttpContext.Session.Get<List<int>>(WebConstants.CART_KEY);
+            // отримуємо дані з корзини
+            var items = HttpContext.Session.Get<Dictionary<int, int>>(WebConstants.CART_KEY);
+            if (items == null) return NotFound();
 
-            if (ids != null) ids.Remove(id);
-            HttpContext.Session.Set(WebConstants.CART_KEY, ids);
+            items.Remove(id);
+
+            // зберігаємо новий список в корзині
+            HttpContext.Session.Set(WebConstants.CART_KEY, items);
 
             return RedirectToAction("Index");
         }

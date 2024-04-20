@@ -7,7 +7,7 @@ using System.Reflection.Emit;
 
 namespace OLX_MVC.Data
 {
-    public class ShopDbContext : IdentityDbContext
+    public class ShopDbContext : IdentityDbContext<User>
     {
         public ShopDbContext()
         {
