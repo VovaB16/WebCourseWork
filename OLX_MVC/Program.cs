@@ -9,7 +9,7 @@ using OLX_MVC.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-string connStr = builder.Configuration.GetConnectionString("LocalDb")!;
+string connStr = builder.Configuration.GetConnectionString("SomeeDb")!;
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
