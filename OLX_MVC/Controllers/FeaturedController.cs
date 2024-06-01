@@ -53,13 +53,11 @@ namespace OLX_MVC.Controllers
 
         public IActionResult Remove(int id)
         {
-            // отримуємо дані з корзини
             var items = HttpContext.Session.Get<Dictionary<int, int>>(WebConstants.CART_KEY);
             if (items == null) return NotFound();
 
             items.Remove(id);
 
-            // зберігаємо новий список в корзині
             HttpContext.Session.Set(WebConstants.CART_KEY, items);
 
             return RedirectToAction("Index");

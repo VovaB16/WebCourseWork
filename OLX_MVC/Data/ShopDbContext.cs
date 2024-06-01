@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using OLX_MVC.Data.Entities;
+using RozetkaMVC.Data.Entities;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 
@@ -51,5 +52,6 @@ namespace OLX_MVC.Data
 
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Review> Reviews { get; set; }
     }
 }

@@ -28,6 +28,32 @@
         </div>
     </form>
 
+    @if (ViewBag.RecentlyViewedProducts != null && ((List<Product>)ViewBag.RecentlyViewedProducts).Any())
+    {
+        <h3>Recently Viewed Products</h3>
+        <div class="row row-cols-1 row-cols-md-5 g-4">
+            @foreach (var product in (List<Product>)ViewBag.RecentlyViewedProducts)
+            {
+                <div class="col">
+                    <a href="@Url.Action("ProductsDetails", "Home", new { id = product.Id })" class="text-black">
+                        <div class="card h-100 clickable-card">
+                            <img src="@product.ImageUrl" class="card-img-top img-fluid" height="240" alt="...">
+                            <div class="card-body d-flex flex-column justify-content-end">
+                                <p class="mt-auto">@product.Name</p>
+                                <p>@product.Price$</p>
+                                <small class="text-muted">
+                                    <a asp-controller="Featured" asp-action="Append" asp-route-id="@product.Id" class="bi bi-heart btn btn-outline-danger"></a>
+                                </small>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    }
+
+    <h3 class="margin-custom">More Products to Choose</h3>
+    
     <div class="row row-cols-1 row-cols-md-5 g-4">
         @foreach (var i in Model)
         {

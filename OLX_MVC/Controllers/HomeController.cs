@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using OLX_MVC.Data;
 using OLX_MVC.Models;
 
@@ -28,17 +29,17 @@ namespace OLX_MVC.Controllers
 
             if (category.HasValue)
             {
-                if (!string.IsNullOrEmpty(searchString))
-                {
-                    items = items.Where(p => p.Name.Contains(searchString) && p.CategoryId == category);
-                }
-                else
-                {
-                    items = items.Where(p => p.CategoryId == category);
-                }
+                items = items.Where(p => p.CategoryId == category);
             }
 
             ViewBag.Categories = await _context.Categories.ToListAsync();
+
+            var cookieValue = Request.Cookies["RecentlyViewed"];
+            List<int> recentlyViewedIds = string.IsNullOrEmpty(cookieValue) ? new List<int>() : JsonConvert.DeserializeObject<List<int>>(cookieValue);
+
+            ViewBag.RecentlyViewedProducts = await _context.Products
+                .Where(p => recentlyViewedIds.Contains(p.Id))
+                .ToListAsync();
 
             return View(await items.ToListAsync());
         }
@@ -50,20 +51,44 @@ namespace OLX_MVC.Controllers
             {
                 return NotFound();
             }
+            
+            List<int> recentlyViewed;
+            var cookieValue = Request.Cookies["RecentlyViewed"];
+            if (string.IsNullOrEmpty(cookieValue))
+            {
+                recentlyViewed = new List<int>();
+            }
+            else
+            {
+                recentlyViewed = JsonConvert.DeserializeObject<List<int>>(cookieValue);
+            }
 
-            var otherProducts = await _context.Products
-                .Where(p => p.Id != id)
-                .Take(30)
-                .ToListAsync();
+            if (recentlyViewed.Contains(id))
+            {
+                recentlyViewed.Remove(id);
+            }
+            recentlyViewed.Insert(0, id);
+            if (recentlyViewed.Count > 5)
+            {
+                recentlyViewed.RemoveAt(5);
+            }
+
+            Response.Cookies.Append("RecentlyViewed", JsonConvert.SerializeObject(recentlyViewed), new CookieOptions
+            {
+                Expires = DateTime.Now.AddDays(7)
+            });
 
             var viewModel = new ProductDetailsViewModel
             {
                 Product = product,
-                OtherProducts = otherProducts
+                Reviews = _context.Reviews.Where(r => r.ProductId == id).ToList(),
+                OtherProducts = await _context.Products.Where(p => p.Id != id).ToListAsync()
             };
 
             return View(viewModel);
         }
+
+
 
         public IActionResult Privacy()
         {
